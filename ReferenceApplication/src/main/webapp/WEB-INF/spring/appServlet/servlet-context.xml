@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util-3.0.xsd  
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<mvc:annotation-driven />
+	<mvc:default-servlet-handler />
+	<context:spring-configured />
+	<context:annotation-config />
+
+	<beans:bean id="requestInterceptor" class="com.mobilize.jwebmap.aop.RequestInterceptor" />
+	<beans:bean id="objectStateInterceptor"
+		class="com.mobilize.jwebmap.aop.ObjectStateInterceptor" />
+	<beans:bean id="sharedVariablesInterceptor"
+		class="com.mobilize.jwebmap.aop.SharedVariablesInterceptor" />
+	<beans:bean id="dataAccessInterceptor"
+		class="com.mobilize.jwebmap.aop.DataAccessInterceptor" />
+
+	<!-- <aop:aspectj-autoproxy proxy-target-class="true"> <aop:include name="logAspect" 
+		/> </aop:aspectj-autoproxy> -->
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
+		up static resources in the ${webappRoot}/resources directory -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
+		in the /WEB-INF/views directory -->
+	<beans:bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/webapp/" />
+		<beans:property name="suffix" value=".html" />
+	</beans:bean>
+
+	<beans:bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- max upload size in bytes -->
+		<beans:property name="maxUploadSize" value="20971520" /> <!-- 20MB -->
+
+		<!-- max size of file in memory (in bytes) -->
+		<beans:property name="maxInMemorySize" value="1048576" /> <!-- 1MB -->
+
+	</beans:bean>
+
+	<beans:bean
+		class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+
+	<beans:bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<beans:property name="targetClass"
+			value="org.springframework.security.core.context.SecurityContextHolder" />
+		<beans:property name="targetMethod" value="setStrategyName" />
+		<beans:property name="arguments" value="MODE_INHERITABLETHREADLOCAL" />
+	</beans:bean>
+	
+	<beans:bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+	  <beans:property name="basenames">
+	    <beans:list>
+	      <beans:value>messages/messages</beans:value>	      
+	    </beans:list>
+	  </beans:property>
+	  <beans:property name="defaultEncoding" value="UTF-8"/>
+  	</beans:bean>
+
+	<context:component-scan base-package="com">
+		<context:exclude-filter type="regex"
+			expression="com\.mobilize\.jwebmap\..*Test" />
+	</context:component-scan>
+	<context:component-scan
+		base-package="com.mobilize.jwebmap.session.SessionSynchronizationProcessor" />
+</beans:beans>

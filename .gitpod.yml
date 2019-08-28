@@ -1,0 +1,13 @@
+image:
+  file: Dockerfile
+
+tasks:
+  - command : ./build.sh
+
+ports:
+  - port: 8080
+    onOpen: open-preview
+
+vscode:
+  extensions:
+    - florianbaer.pb-syntax@0.2.1:8BpBR6gFIBo7WD55piDsXw==

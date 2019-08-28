@@ -1,0 +1,14 @@
+<div *ngIf="model">
+    <wm-window [model]="model" id="w_sample" class="sample_w_sample">
+        <ng-template let-model>
+            <div class="w_sample">
+                <wm-data-manager-control id="dw_1" [model]="model.dw_1" class="dw_1">
+                    
+                </wm-data-manager-control>
+                <wm-single-line-edit id="sle_1" [model]="model.sle_1" class="sle_1"></wm-single-line-edit>
+                <wm-static-text id="st_1" [model]="model.st_1" class="st_1"></wm-static-text>
+                <wm-command-button id="cb_1" [model]="model.cb_1" class="cb_1"></wm-command-button>
+            </div>
+        </ng-template>
+    </wm-window>
+</div>

@@ -1,0 +1,12 @@
+<wm-freeform [model]="model" id="d_sample_list" class="sample_d_sample_list d_sample_list">
+    <ng-template #header let-context="contextHeader">
+			<wm-static-text id="list_t" [model]="model.list_t" class="list_t" [dataManagerContext]="context"></wm-static-text>
+		</ng-template>
+    <ng-template #footer let-context="contextFooter">
+		</ng-template>
+    <ng-template #summary let-context="contextSummary">
+		</ng-template>
+    <ng-template #details let-context="context">
+			<wm-dw-column id="list" [model]="model.list" class="list" [dataManagerContext]="context"></wm-dw-column>
+		</ng-template>
+</wm-freeform>
