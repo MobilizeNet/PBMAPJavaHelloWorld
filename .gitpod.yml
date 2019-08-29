@@ -2,7 +2,7 @@ image:
   file: Dockerfile
 
 tasks:
-  - command : ./build.sh
+  - command : ./start.sh
 
 ports:
   - port: 8080
