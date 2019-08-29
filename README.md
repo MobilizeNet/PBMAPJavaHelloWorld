@@ -43,7 +43,7 @@ The project to generate the WAR is here.
 
 [Gitpod](https://gitpod.io) is a great company that allows you to get your repo and hosted on a cloud IDE.
 
-You can try that with [this repo with this Link](https://gitpod.io#https://github.com/MobilizeNet/PBJavaHelloWorld)
+You can try that with [this repo with this Link](https://gitpod.io#https://github.com/MobilizeNet/PBMAPJavaHelloWorld)
 
 Below you can see an screenshot of this repo on Safari on MAC OS
 
