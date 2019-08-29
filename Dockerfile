@@ -7,7 +7,7 @@ WORKDIR /opt/tmptomcat/
 RUN wget https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.45/bin/apache-tomcat-8.5.45.zip
 
 RUN unzip apache*.zip
-RUN mv /opt/tmptomcat/apache-tomcat-8.5.43 /opt/tomcat
+RUN mv /opt/tmptomcat/apache-tomcat-8.5.45 /opt/tomcat
 RUN chown -R gitpod: /opt/tomcat
 RUN rm -rf /opt/tomcat/webapps
 RUN mkdir /opt/tomcat/webapps/
