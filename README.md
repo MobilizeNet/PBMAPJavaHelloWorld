@@ -39,3 +39,13 @@ The migrated powerbuilder code to java is inside this folder.
 ## ReferenceAppl
 The project to generate the WAR is here.
 
+# Running the app directly from your browser
+
+[Gitpod](https://gitpod.io) is a great company that allows you to get your repo and hosted on a cloud IDE.
+
+You can try that with [this repo with this Link](https://gitpod.io#https://github.com/MobilizeNet/PBJavaHelloWorld)
+
+Below you can see an screenshot of this repo on Safari on MAC OS
+
+![PBMAPHelloWorld](./ScreenShot.png)
+
