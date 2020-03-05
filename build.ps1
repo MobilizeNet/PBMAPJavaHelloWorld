@@ -244,3 +244,5 @@ copy "$PSScriptRoot\webMAP.properties" "$TOOLS_DIR\apache-tomcat-$TOMCAT_VER\con
 copy "$PSScriptRoot\ReferenceApplication\target\ws-1.0.0.war" "$TOOLS_DIR\apache-tomcat-$TOMCAT_VER\webapps\ROOT.war"
 
 Write-Host "The application is ready. You can use catalina run or catalina start"
+Write-Host "Run .\tools\apache-tomcat-$TOMCAT_VER\bin\startup.bat  to start and "
+Write-Host "Run .\tools\apache-tomcat-$TOMCAT_VER\bin\shutdown.bat to stop  and "

@@ -28,9 +28,10 @@ fi
 
 
 # Extract Metada Files that will be use to install helpers
-cd "$TOOLS_DIR"
-jar xf "helpers-${HELPERS_VERSION}.jar" META-INF/maven/com.mobilize/helpers/pom.xml"
-jar xf "helpers-${HELPERS_VERSION}.jar" META-INF/maven/com.mobilize/helpers/pom.properties"
+echo "Installing helpers ${HELPERS_VER} into local maven"
+cd "${TOOLS_DIR}"
+jar xf "helpers-${HELPERS_VER}.jar" "META-INF/maven/com.mobilize/helpers/pom.xml"
+jar xf "helpers-${HELPERS_VER}.jar" "META-INF/maven/com.mobilize/helpers/pom.properties"
 
 
 echo  "Checking for Tomcat"
