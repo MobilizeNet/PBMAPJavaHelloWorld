@@ -6,7 +6,7 @@ This tool has the ability to process the source code to generate Java, Angular, 
 
 Instead of manually rewriting an entire application, we help you by automating this process using PBJava. This reduces costs, risks and time, while keeping the existing business logic intact.
 
-For more details you can go to our [website](https://www.mobilize.net/powerbuilder) or check our documentation at https://product-docs.azurewebsites.net/
+For more details you can go to our [website](https://www.mobilize.net/powerbuilder) or check our documentation at https://docs.mobilize.net/
 
 
 
