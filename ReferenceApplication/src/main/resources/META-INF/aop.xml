@@ -2,7 +2,7 @@
 <aspectj>
 	<weaver>
 		<include within="com.mobilize..*" />
-		<include within="*..*" />
+		<include within="com.helloworld..*" />
 	</weaver>
 	<aspects>
 	    <aspect name="com.mobilize.jwebmap.aop.ObjectStateInterceptor" /> 

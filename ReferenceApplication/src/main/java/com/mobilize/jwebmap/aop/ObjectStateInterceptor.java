@@ -49,7 +49,7 @@ public class ObjectStateInterceptor
    @Pointcut ("execution(void com.mobilize..set*(..))")
    public void interceptSetter() {
    }
-   @Pointcut ("execution(void com.sample..set*(..))")
+   @Pointcut ("execution(void com.helloworld..set*(..))")
    public void projectInterceptSetter() {
    }
    @Pointcut ("webMAPStateWindowManagement() "

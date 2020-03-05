@@ -9,11 +9,10 @@
 	<version>1.0.0</version>
 	<properties>
 		<java-version>1.8</java-version>
-		<org.springframework-version>4.2.3.RELEASE</org.springframework-version>
+		<org.springframework-version>5.1.9.RELEASE</org.springframework-version>
 		<org.aspectj-version>1.8.10</org.aspectj-version>
 		<org.slf4j-version>1.7.25</org.slf4j-version>
-		<logback-version>1.2.3</logback-version>
-		<groovy-version>3.0.0-alpha-1</groovy-version>
+		<logback-version>1.1.2</logback-version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -35,6 +34,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-war-plugin</artifactId>
+						<version>3.2.3</version>
 						<configuration>
 							<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
 						</configuration>
@@ -42,6 +42,30 @@
 				</plugins>
 			</build>
       		</profile>
+		<profile>
+			<id>selfcontained</id>
+			<properties>
+				<mvn.app.debug.mode>true</mvn.app.debug.mode>
+				<property.profile>localProfile</property.profile>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>3.2.3</version>
+						<configuration>
+							<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+					<webResources>
+						<resource>
+							<directory>configuration</directory>
+						</resource>
+					</webResources>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
 	</profiles> 
 	
@@ -177,17 +201,17 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>2.6.2</version>
+			<version>2.9.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.6.2</version>
+			<version>2.9.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.6.2</version>
+			<version>2.9.4</version>
 		</dependency>
 
 
@@ -219,114 +243,100 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
 			<version>${logback-version}</version>
-		<exclusions>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-            <artifactId>logback-access</artifactId>
-            <version>${logback-version}</version>
-        </dependency>        
-		<dependency>
-            <groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy-all</artifactId>
-			<version>${groovy-version}</version>
-		</dependency>
-		<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aspects</artifactId>
-            <version>4.2.3.RELEASE</version>
-        </dependency>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aspects</artifactId>
+        <version>4.2.3.RELEASE</version>
+    </dependency>
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<additionalProjectnatures>
-						<projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
-					</additionalProjectnatures>
-					<additionalBuildcommands>
-						<buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
-					</additionalBuildcommands>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>true</downloadJavadocs>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.2.1</version>
-				<configuration>
-					<mainClass>org.test.int1.Main</mainClass>
-				</configuration>
-			</plugin>
+    <pluginManagement>
+		  <plugins>
+			  <plugin>
+				  <artifactId>maven-eclipse-plugin</artifactId>
+				  <version>2.9</version>
+				  <configuration>
+					  <additionalProjectnatures>
+						  <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
+					  </additionalProjectnatures>
+					  <additionalBuildcommands>
+						  <buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
+					  </additionalBuildcommands>
+					  <downloadSources>true</downloadSources>
+					  <downloadJavadocs>true</downloadJavadocs>
+				  </configuration>
+			  </plugin>
+			  <plugin>
+				  <groupId>org.codehaus.mojo</groupId>
+				  <artifactId>exec-maven-plugin</artifactId>
+				  <version>1.2.1</version>
+				  <configuration>
+					  <mainClass>org.test.int1.Main</mainClass>
+				  </configuration>
+			  </plugin>
 
-			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>2.1</version>
-				<configuration>
-					<url>http://23.96.20.104:8080/manager/text</url>
-					<username>admin</username>
-					<password>admin</password>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
-				<configuration>
-					<fork>true</fork>
-					<meminitial>512m</meminitial>
-					<maxmem>15360m</maxmem>
-					<source>${java-version}</source>
-					<target>${java-version}</target>
-					<encoding>${project.build.sourceEncoding}</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<encoding>${project.build.sourceEncoding}</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.11</version>
-                <configuration>
-                    <proc>none</proc>
-                    <complianceLevel>1.8</complianceLevel>
-                    <aspectLibraries>
-                        <aspectLibrary>
-                            <groupId>com.mobilize</groupId>
-                            <artifactId>helpers</artifactId>
-                        </aspectLibrary>
-                        <aspectLibrary>
-                            <groupId>org.springframework</groupId>
-                            <artifactId>spring-aspects</artifactId>
-                        </aspectLibrary>
-                    </aspectLibraries>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>compile_with_aspectj</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-		</plugins>
+			  <plugin>
+				  <groupId>org.apache.tomcat.maven</groupId>
+				  <artifactId>tomcat7-maven-plugin</artifactId>
+				  <version>2.1</version>
+				  <configuration>
+					  <url>http://23.96.20.104:8080/manager/text</url>
+					  <username>admin</username>
+					  <password>admin</password>
+				  </configuration>
+			  </plugin>
+			  <plugin>
+				  <groupId>org.apache.maven.plugins</groupId>
+				  <artifactId>maven-compiler-plugin</artifactId>
+				  <version>3.5.1</version>
+				  <configuration>
+					  <fork>true</fork>
+					  <meminitial>512m</meminitial>
+					  <maxmem>15360m</maxmem>
+					  <source>${java-version}</source>
+					  <target>${java-version}</target>
+					  <encoding>${project.build.sourceEncoding}</encoding>
+				  </configuration>
+			  </plugin>
+			  <plugin>
+				  <groupId>org.apache.maven.plugins</groupId>
+				  <artifactId>maven-resources-plugin</artifactId>
+				  <version>2.6</version>
+				  <configuration>
+					  <encoding>${project.build.sourceEncoding}</encoding>
+				  </configuration>
+			  </plugin>
+			  <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>aspectj-maven-plugin</artifactId>
+                  <version>1.11</version>
+                  <configuration>
+                      <proc>none</proc>
+                      <complianceLevel>1.8</complianceLevel>
+                      <aspectLibraries>
+                          <aspectLibrary>
+                              <groupId>com.mobilize</groupId>
+                              <artifactId>helpers</artifactId>
+                          </aspectLibrary>
+                          <aspectLibrary>
+                              <groupId>org.springframework</groupId>
+                              <artifactId>spring-aspects</artifactId>
+                          </aspectLibrary>
+                      </aspectLibraries>
+                  </configuration>
+                  <executions>
+                      <execution>
+                          <id>compile_with_aspectj</id>
+                          <goals>
+                              <goal>compile</goal>
+                          </goals>
+                      </execution>
+                  </executions>
+              </plugin>
+		  </plugins>
+    </pluginManagement>
 	</build>
 
 	<reporting>

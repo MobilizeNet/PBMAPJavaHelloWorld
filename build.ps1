@@ -1,3 +1,5 @@
+# Function Declarations 
+
 function GetProxyEnabledWebClient
 {
     $wc = New-Object System.Net.WebClient
@@ -90,6 +92,9 @@ function java_from_full_path {
     return $javas
 }
 
+## Start of building script
+
+
 # Check Java Installation
 java_from_full_path
 
@@ -102,44 +107,67 @@ if(!$PSScriptRoot){
 }
 
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
+$MAVEN_VERSION = "3.6.3"
+$HELPERS_VERSION = "2.1.0"
 $TOOLS_DIR = Join-Path $PSScriptRoot "tools"
 $TOMCAT_VER = "8.5.43";
 $TOMCAT = Join-Path $TOOLS_DIR "apache-tomcat-$TOMCAT_VER"
 $TOMCAT_URL = "https://archive.apache.org/dist/tomcat/tomcat-8/v$TOMCAT_VER/bin/apache-tomcat-$TOMCAT_VER.zip"
-$MAVEN_URL = "https://www-us.apache.org/dist/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.zip";
-$HELPERS = "https://www.myget.org/F/mobilizewebmapjava/maven/com.mobilize/helpers/2.1.0/helpers-2.1.0.jar";
-$HELPERS_JAR = "helpers-2.1.0.jar"
+$MAVEN_URL = "https://downloads.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.zip";
+$HELPERS = "https://www.myget.org/F/mobilizewebmapjava/maven/com.mobilize/helpers/$HELPERS_VERSION/helpers-$HELPERS_VERSION.jar";
+$HELPERS_JAR = "helpers-$HELPERS_VERSION.jar"
 $HELPERS_PATH = "$PSScriptRoot/tools/$HELPERS_JAR"
+$JAR = Join-Path $Env:JAVA_HOME "\bin\jar"
 
-$MAVEN = Join-Path $TOOLS_DIR "apache-maven-3.6.1"
+$MAVEN = Join-Path $TOOLS_DIR "apache-maven-$MAVEN_VERSION"
 
 Write-Host "Checking for tools"
+Write-Host "It will check for"
+Write-Host "* tools directory"
+Write-Host "* maven tools           installation"
+Write-Host "* apache tomcat         installation"
+Write-Host "* mobilize java helpers installation"
 Write-Host "***************************"
 
 
-
-# Make sure tools folder exists
+# The script will make
+# sure tools folder exists.
+# This directory will hold any dependencies needed to build the 
+# application code.
+# For example:
+# * apache-maven
+# * apache-tomcat
+# * mobilize powerbuilder helpers
 if ((Test-Path $PSScriptRoot) -and !(Test-Path $TOOLS_DIR)) {
     Write-Host "Creating tools directory..."
     New-Item -Path $TOOLS_DIR -Type directory | out-null
 }
 
-Write-Host "Checking for helpers"
+# The script will check if the Mobilize.Net Helpers are installed
+# if they are not it will download the helpers from a remote repository
+Write-Host "Checking for helpers $HELPERS_VERSION"
+cd "$PSScriptRoot\tools"
+$extractcommand = "$JAR xf $HELPERS_JAR META-INF/maven/com.mobilize/helpers/pom.xml"
 if (!(Test-Path $HELPERS_PATH)) {
    try {
         $wc = GetProxyEnabledWebClient
         $wc.DownloadFile($HELPERS, $HELPERS_PATH)
         Write-Host "Extracting Helpers POM to install JAR into Maven Repo"
         cd "$PSScriptRoot\tools"
-        jar xf .\helpers-2.1.0.jar "META-INF/maven/com.mobilize/helpers/pom.xml"
+
     } catch {
         $ErrorMessage = $_.Exception.Message
         Throw "Could not download Helpers or error extracting jar $ErrorMessage "
     }
 }
 
+# Extract Metada Files that will be use to install helpers
+$extractcommand = "$JAR xf helpers-$HELPERS_VERSION.jar META-INF/maven/com.mobilize/helpers/pom.xml"
+iex $extractcommand
+$extractcommand = "$JAR xf helpers-$HELPERS_VERSION.jar META-INF/maven/com.mobilize/helpers/pom.properties"
+iex $extractcommand
 
-Write-Host "Checking for Tomcat"
+Write-Host "Checking for Tomcat $TOMCAT_VER"
 
 # Try download Tomcat if not exists
 if (!(Test-Path $TOMCAT)) {
@@ -147,7 +175,7 @@ if (!(Test-Path $TOMCAT)) {
     try {
         $wc = GetProxyEnabledWebClient
         $wc.DownloadFile($TOMCAT_URL, "$TOOLS_DIR\apache-tomcat-$TOMCAT_VER.zip")
-        Expand-Archive -Path "$TOOLS_DIR\apache-tomcat-$TOMCAT_VER.zip" -DestinationPath "$TOOLS_DIR"
+        Expand-Archive -Path "$TOOLS_DIR\apache-tomcat-$TOMCAT_VER.zip" -DestinationPath "$TOOLS_DIR" -Force
         Remove-Item -Recurse -Force "$TOOLS_DIR\apache-tomcat-$TOMCAT_VER\webapps"
         New-Item -Path "$TOOLS_DIR\apache-tomcat-$TOMCAT_VER\webapps" -Type directory | out-null
     } catch {
@@ -166,21 +194,21 @@ if (!(Test-Path $WEBAPPS)) {
 $Env:Path += ";$TOOLS_DIR\apache-tomcat-$TOMCAT_VER\bin";
 
 
-Write-Host "Checking for Maven"
+Write-Host "Checking for Maven $MAVEN_VERSION"
 # Try download Maven if not exists
 if (!(Test-Path $MAVEN)) {
     Write-Verbose -Message "Downloading Maven..."
     try {
         $wc = GetProxyEnabledWebClient
-        $wc.DownloadFile($MAVEN_URL, "$TOOLS_DIR\apache-maven-3.6.1-bin.zip")
-        Expand-Archive -Path "$TOOLS_DIR\apache-maven-3.6.1-bin.zip" -DestinationPath "$TOOLS_DIR"
+        $wc.DownloadFile($MAVEN_URL, "$TOOLS_DIR\apache-maven-$MAVEN_VERSION-bin.zip")
+        Expand-Archive -Path "$TOOLS_DIR\apache-maven-$MAVEN_VERSION-bin.zip" -DestinationPath "$TOOLS_DIR" -Force
     } catch {
         $ErrorMessage = $_.Exception.Message
         Throw "Could not download Maven $ErrorMessage "
     }
 }
-
-$Env:Path += ";$TOOLS_DIR\apache-maven-3.6.1\bin";
+# Adding maven to PATH
+$Env:Path += ";$TOOLS_DIR\apache-maven-$MAVEN_VERSION\bin";
 
 Write-Host "Starting compilation"
 Write-Host "============================"
@@ -189,9 +217,12 @@ Write-Host "============================"
 
 Write-Host "Building Migrated Application Code"
 Set-Location -Path "$PSScriptRoot\Target"
-Write-Host "Installing Helpers"
-Write-Host "mvn install:install-file -Dfile=$HELPERS_PATH -DgroupId=com.mobilize -DartifactId=helpers -Dversion=2.1.0 -Dpackaging=jar -DpomFile=$TOOLS_DIR\META-INF\maven\com.mobilize\helpers\pom.xml"
-mvn install:install-file -Dfile="$HELPERS_PATH" -DgroupId="com.mobilize" -DartifactId="helpers" -Dversion="2.1.0" -Dpackaging=jar -DpomFile="$TOOLS_DIR\META-INF\maven\com.mobilize\helpers\pom.xml"
+
+# The helpers jar must be installed into the repository
+Write-Host "Installing Helpers $HELPERS_VERSION"
+Write-Host "mvn install:install-file -Dfile=$HELPERS_PATH -DgroupId=com.mobilize -DartifactId=helpers -Dversion=$HELPERS_VERSION -Dpackaging=jar -DpomFile=$TOOLS_DIR\META-INF\maven\com.mobilize\helpers\pom.xml"
+mvn install:install-file -Dfile="$HELPERS_PATH" -DgroupId="com.mobilize" -DartifactId="helpers" -Dversion="$HELPERS_VERSION" -Dpackaging=jar -DpomFile="$TOOLS_DIR\META-INF\maven\com.mobilize\helpers\pom.xml"
+
 Write-Host "Building Code"
 mvn.cmd clean install 
 Set-Location -Path "$PSScriptRoot"
