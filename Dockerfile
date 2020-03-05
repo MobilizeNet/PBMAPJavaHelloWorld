@@ -14,7 +14,6 @@ RUN rm -rf /opt/tomcat/webapps
 RUN mkdir /opt/tomcat/webapps/
 RUN chown -R gitpod: /opt/tomcat/webapps
 RUN chmod +x /opt/tomcat/bin/*.sh
-RUN chmod +x /workspace/PBMAPJavaHelloWorld/*.sh
 ENV TOMCAT_HOME=/opt/tomcat
 
 USER gitpod
